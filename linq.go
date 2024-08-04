@@ -11,10 +11,22 @@ func New[T any](iterator iter.Seq[T]) query[T] {
 	return query[T](iterator)
 }
 
+func (f query[T]) ToIter() iter.Seq[T] {
+	return iter.Seq[T](f)
+}
+
+func (f query[T]) ToSlice() []T {
+	l := make([]T, 0)
+	for v := range f {
+		l = append(l, v)
+	}
+	return l
+}
+
 func (f query[T]) Where(cond func(x T) bool) query[T] {
 	return func(yield func(x T) bool) {
 		for v := range f {
-			if !cond(v)  {
+			if !cond(v) {
 				continue
 			}
 
